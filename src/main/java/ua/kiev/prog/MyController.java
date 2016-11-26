@@ -1,5 +1,6 @@
 package ua.kiev.prog;
 
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,11 +10,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.InputStream;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Controller
 @RequestMapping("/")
@@ -76,6 +79,34 @@ public class MyController {
             photos.remove(id[i]);
         }
         return "index";
+    }
+
+    @RequestMapping( value = "/getzip", produces="application/zip", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getZip(@RequestParam("id") long id)
+    {
+        byte[] result = null;
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ZipOutputStream zos = new ZipOutputStream(bos))
+        {
+            ZipEntry zipEntry = new ZipEntry(""+id);
+            zipEntry.setSize(photos.get(id).length);
+
+            zos.putNextEntry(zipEntry);
+            zos.write(photos.get(id));
+            zos.closeEntry();
+            zos.close();
+            result = bos.toByteArray();
+
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        System.out.println("KU!!!");
+        return ResponseEntity
+                .ok()
+                .contentLength(result.length)
+                .body(result);
+
     }
 
     private ResponseEntity<byte[]> photoById(long id) {

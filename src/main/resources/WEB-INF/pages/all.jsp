@@ -14,20 +14,22 @@
 <body>
 <div align="center">
     <form action="/del_many" method="post">
-    <table>
+    <table border="1">
         <tr>
             <td>#</td>
             <td>id</td>
             <td>pic</td>
-
+            <td>action</td>
+            <td>zip</td>
         </tr>
 
         <c:forEach var="pic" items="${list}" varStatus="i">
             <tr>
                 <td>${i.count}</td>
                 <td>${pic}</td>
-                <td><img width="300" src="/photo/${pic}" /></td>
+                <td><img width="200" src="/photo/${pic}" /></td>
                 <td><input type="checkbox" name="id" value="${pic}" /></td>
+                <td><a href="/getzip?id=${pic}">get Zip</a></td>
             </tr>
         </c:forEach>
 
