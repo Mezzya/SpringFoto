@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -56,6 +58,24 @@ public class MyController {
             throw new PhotoNotFoundException();
         else
             return "index";
+    }
+
+    @RequestMapping("/view_all")
+    public String allView(Model model)
+    {
+        List<Long> result = new ArrayList<Long>(photos.keySet());
+        model.addAttribute("list",result);
+        return "all";
+
+    }
+
+    @RequestMapping(value = "/del_many", method = RequestMethod.POST)
+    public String delChecked(@RequestParam("id") long[] id)
+    {
+        for (int i = 0; i < id.length ; i++) {
+            photos.remove(id[i]);
+        }
+        return "index";
     }
 
     private ResponseEntity<byte[]> photoById(long id) {

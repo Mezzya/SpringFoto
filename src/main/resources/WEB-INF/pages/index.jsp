@@ -14,6 +14,7 @@
             Photo: <input type="file" name="photo">
             <input type="submit" />
         </form>
+         <a href="/view_all">View All Photos</a>
       </div>
   </body>
 </html>
